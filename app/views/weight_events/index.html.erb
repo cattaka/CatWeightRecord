@@ -1,0 +1,27 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Weight Events</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Label</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @weight_events.each do |weight_event| %>
+      <tr>
+        <td><%= weight_event.label %></td>
+        <td><%= link_to 'Show', weight_event %></td>
+        <td><%= link_to 'Edit', edit_weight_event_path(weight_event) %></td>
+        <td><%= link_to 'Destroy', weight_event, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Weight Event', new_weight_event_path %>

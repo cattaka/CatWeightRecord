@@ -1,0 +1,2 @@
+class WeightEvent < ApplicationRecord
+end
