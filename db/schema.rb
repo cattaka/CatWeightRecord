@@ -20,6 +20,7 @@ ActiveRecord::Schema.define(version: 2020_10_03_061512) do
 
   create_table "weight_events", force: :cascade do |t|
     t.string "label"
+    t.float "value"
     t.integer "image_file_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
