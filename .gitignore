@@ -35,7 +35,6 @@
 
 .idea
 vendor
-hx711py
 
 /public/packs
 /public/packs-test
