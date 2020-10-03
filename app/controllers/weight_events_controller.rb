@@ -1,5 +1,6 @@
 class WeightEventsController < ApplicationController
   before_action :set_weight_event, only: [:show, :edit, :update, :destroy]
+  skip_before_action :verify_authenticity_token
 
   # GET /weight_events
   # GET /weight_events.json
