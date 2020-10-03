@@ -25,6 +25,10 @@ class WeightEventsController < ApplicationController
   # POST /weight_events.json
   def create
     @weight_event = WeightEvent.new(weight_event_params)
+    raw_image_file = params[:weight_event][:image_file]
+    if raw_image_file
+      @weight_event.image_file = ImageFile.create(data: raw_image_file.read)
+    end
 
     respond_to do |format|
       if @weight_event.save

@@ -5,7 +5,9 @@
 <table>
   <thead>
     <tr>
+      <th>Created at</th>
       <th>Label</th>
+      <th>Image</th>
       <th colspan="3"></th>
     </tr>
   </thead>
@@ -13,7 +15,13 @@
   <tbody>
     <% @weight_events.each do |weight_event| %>
       <tr>
+        <td><%= weight_event.created_at %></td>
         <td><%= weight_event.label %></td>
+        <td>
+          <% if weight_event.image_file_id %>
+            <img src="<%=image_file_path(weight_event.image_file_id) %>" width="320px">
+          <% end %>
+        </td>
         <td><%= link_to 'Show', weight_event %></td>
         <td><%= link_to 'Edit', edit_weight_event_path(weight_event) %></td>
         <td><%= link_to 'Destroy', weight_event, method: :delete, data: { confirm: 'Are you sure?' } %></td>
