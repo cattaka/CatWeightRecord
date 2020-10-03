@@ -1,0 +1,16 @@
+<div>
+  <span>
+    Page:
+    <%=link_to '<<', path_func.call(rparams.merge(page: page - 1, per: per)) %>
+    <%=@page %>
+    <%=link_to '>>', path_func.call(rparams.merge(page: page + 1, per: per)) %>
+  </span>
+  ,
+  <span>
+    Per:
+    <%=link_to '100', path_func.call(rparams.merge(page: page, per: 100)) %>
+    <%=link_to '500', path_func.call(rparams.merge(page: page, per: 500)) %>
+    <%=link_to '1000', path_func.call(rparams.merge(page: page, per: 1000)) %>
+    <%=link_to '2000', path_func.call(rparams.merge(page: page, per: 200)) %>
+  </span>
+</div>

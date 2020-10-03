@@ -1,11 +1,15 @@
 class WeightEventsController < ApplicationController
   before_action :set_weight_event, only: [:show, :edit, :update, :destroy]
+  before_action :set_rparams, only: [:index]
   skip_before_action :verify_authenticity_token
 
   # GET /weight_events
   # GET /weight_events.json
   def index
-    @weight_events = WeightEvent.order(created_at: :desc).all
+    @page = (params[:page].to_i > 0) ? params[:page].to_i : 1
+    @per = (params[:per].to_i == 0) ?  100 : params[:per].to_i.clamp(1, 1000)
+
+    @weight_events = WeightEvent.order(id: :desc).limit(@per).offset((@page - 1) * @per).all
   end
 
   # GET /weight_events/1
@@ -75,5 +79,11 @@ class WeightEventsController < ApplicationController
     # Only allow a list of trusted parameters through.
     def weight_event_params
       params.require(:weight_event).permit(:label, :value)
+    end
+
+    def set_rparams
+      @rparams = params.permit!.to_h.map{|k,v| [k.to_sym, v] }.to_h
+      @rparams.delete(:controller)
+      @rparams.delete(:action)
     end
 end

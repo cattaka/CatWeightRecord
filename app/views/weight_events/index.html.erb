@@ -2,6 +2,8 @@
 
 <h1>Weight Events</h1>
 
+<%= render 'layouts/pager', rparams: @rparams, path_func: method(:weight_events_path), page: @page, per: @per %>
+
 <table>
   <thead>
     <tr>
@@ -37,6 +39,8 @@
     <% end %>
   </tbody>
 </table>
+
+<%= render 'layouts/pager', rparams: @rparams, path_func: method(:weight_events_path), page: @page, per: @per %>
 
 <br>
 
