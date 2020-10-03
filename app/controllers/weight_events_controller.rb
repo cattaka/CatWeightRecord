@@ -5,7 +5,7 @@ class WeightEventsController < ApplicationController
   # GET /weight_events
   # GET /weight_events.json
   def index
-    @weight_events = WeightEvent.all
+    @weight_events = WeightEvent.order(created_at: :desc).all
   end
 
   # GET /weight_events/1
