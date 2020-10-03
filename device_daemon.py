@@ -11,7 +11,7 @@ EMULATE_HX711=False
 RECORD_LIMIT_SEC=5.0
 THRESHOLD_COUNT=30
 THRESHOLD_VARIANCE=0.05
-THRESHOLD_DIFF_MEAN=0.5
+THRESHOLD_DIFF_VALUE=0.5
 DELAY_FOR_SAVE=5
 
 API_URL='http://localhost:3000/cat_weight_scale/weight_events'
@@ -88,8 +88,8 @@ while True:
             delay_for_save -= 1
             if delay_for_save == 0:
                 value_to_save = mean - last_fixed_mean
-                
-        if value_to_save is not None:
+
+        if value_to_save is not None and abs(value_to_save) >= THRESHOLD_DIFF_VALUE:
             post_image(value_to_save)
             print("%.5f, %d, %.5f, %.5f, %.5f" % (value, len(records), variance, mean, value_to_save))
 
