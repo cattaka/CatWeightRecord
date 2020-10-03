@@ -2,7 +2,7 @@
 
 require_relative 'config/environment'
 
-@relative_url_root = ENV["RAILS_RELATIVE_URL_ROOT"]
-map @relative_url_root || "/" do
+ActionController::Base.config.relative_url_root = ENV["RAILS_RELATIVE_URL_ROOT"]
+map ActionController::Base.config.relative_url_root || "/" do
   run Rails.application
 end
