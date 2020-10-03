@@ -3,6 +3,9 @@
 import time
 import sys
 import statistics as stt
+import picamera
+import io
+import requests
 
 EMULATE_HX711=False
 RECORD_LIMIT_SEC=5.0
@@ -10,6 +13,8 @@ THRESHOLD_COUNT=30
 THRESHOLD_VARIANCE=0.05
 THRESHOLD_DIFF_MEAN=0.5
 DELAY_FOR_SAVE=5
+
+API_URL='http://localhost:3000/cat_weight_scale/weight_events'
 
 referenceUnit = -19209.1867659067
 
@@ -28,22 +33,28 @@ def cleanAndExit():
     print("Bye!")
     sys.exit()
 
+def post_image(value: float):
+    buffer = io.BytesIO()
+    with picamera.PiCamera(resolution=(320,240)) as camera:
+        camera.capture(buffer, format='jpeg', quality=50)
+        buffer.seek(0)
+    response = requests.post(API_URL,
+        data = {"weight_event[label]": '', "weight_event[value]": '{:0.3f}'.format(value)},
+        files = {"weight_event[image_file]": ("image.jpg", buffer.read(), "image/jpeg")}
+    )
+    print(response.status_code)
+
 hx = HX711(5, 6)
-
 hx.set_reading_format("MSB", "MSB")
-
 hx.set_reference_unit(referenceUnit)
-
 hx.reset()
-
 hx.tare()
+hx.power_down()
+hx.power_up()
 
 print("Tare done! Add weight now...")
 
 records = []
-
-hx.power_down()
-hx.power_up()
 last_fixed = False
 last_fixed_mean = None
 delay_for_save = -1
@@ -63,7 +74,7 @@ while True:
         variance = stt.variance(map(lambda r: r[1], records))
         mean = stt.mean(map(lambda r: r[1], records))
 
-        value_to_save = 0
+        value_to_save = None
         if variance < THRESHOLD_VARIANCE:
             if not last_fixed:
                 delay_for_save = DELAY_FOR_SAVE
@@ -78,10 +89,9 @@ while True:
             if delay_for_save == 0:
                 value_to_save = mean - last_fixed_mean
                 
-
-        print("%.5f, %d, %.5f, %.5f, %.5f" % (value, len(records), variance, mean, value_to_save))
-
-#        time.sleep(0.1)
+        if value_to_save is not None:
+            post_image(value_to_save)
+            print("%.5f, %d, %.5f, %.5f, %.5f" % (value, len(records), variance, mean, value_to_save))
 
     except (KeyboardInterrupt, SystemExit):
         cleanAndExit()
