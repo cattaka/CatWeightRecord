@@ -17,7 +17,13 @@
     <% @weight_events.each do |weight_event| %>
       <tr>
         <td><%= weight_event.created_at %></td>
-        <td><%= weight_event.label %></td>
+        <td>
+          <select class="select_label" data-id="<%= weight_event.id %>">
+            <% ['', 'Charlie', 'Sei'].each do |l| %>
+              <option value="<%= l %>" <%= weight_event.label== l ? 'selected' : '' %>><%= l %></option>
+            <% end %>
+          </select>
+        </td>
         <td><%= weight_event.value %></td>
         <td>
           <% if weight_event.image_file_id %>
@@ -35,3 +41,23 @@
 <br>
 
 <%= link_to 'New Weight Event', new_weight_event_path %>
+
+<script type="text/javascript">
+  const weight_events_url = "<%=weight_events_url %>"
+
+  $(function () {
+    $(".select_label").change(function() {
+      const id = $(this).attr('data-id')
+      const label = $(this).val()
+      $.ajax(
+        weight_events_url + "/" + id + '.json',
+        {
+          method: 'PATCH',
+          data: $.param({
+            'weight_event[label]': label
+          })
+        }
+      )
+    });
+  })
+</script>
