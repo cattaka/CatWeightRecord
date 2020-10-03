@@ -10,18 +10,21 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_10_03_061249) do
+ActiveRecord::Schema.define(version: 2020_10_03_061512) do
+
+  create_table "image_files", force: :cascade do |t|
+    t.binary "data"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
 
   create_table "weight_events", force: :cascade do |t|
     t.string "label"
+    t.integer "image_file_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["image_file_id"], name: "index_weight_events_on_image_file_id"
   end
 
-  create_table "weights", force: :cascade do |t|
-    t.string "label"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-  end
-
+  add_foreign_key "weight_events", "image_files"
 end

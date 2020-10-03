@@ -1,2 +1,0 @@
-class Weight < ApplicationRecord
-end
