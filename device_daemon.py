@@ -16,7 +16,7 @@ DELAY_FOR_SAVE=5
 
 API_URL='http://localhost:3000/cat_weight_scale/weight_events'
 
-referenceUnit = -19209.1867659067
+referenceUnit = -20000
 
 if not EMULATE_HX711:
     import RPi.GPIO as GPIO
