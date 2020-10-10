@@ -26,6 +26,13 @@ class WeightEventsController < ApplicationController
   def edit
   end
 
+  def graph
+    @value_max = 9.0
+    @date_to = Time.now.beginning_of_day + 1.days
+    @date_from = @date_to - 1.months
+    @weight_events = WeightEvent.where(created_at: (@date_from)..(@date_to)).where.not(label: nil).where.not(label: '').order(:created_at).all.group_by(&:label)
+  end
+
   # POST /weight_events
   # POST /weight_events.json
   def create

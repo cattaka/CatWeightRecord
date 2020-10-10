@@ -1,0 +1,90 @@
+<p id="notice"><%= notice %></p>
+
+<%=render 'layouts/navigation' %>
+
+<h1>Weight graph</h1>
+
+<%
+  w = 800
+  h = 800
+  font_size = 10
+  padding_left = 24
+  padding_right = 16
+  padding_top = 16
+  padding_bottom = 64
+  area_w =  w - padding_left - padding_right
+  area_h =  - (h - padding_top - padding_bottom)
+  ox = padding_left
+  oy = h - padding_bottom
+
+  colors = { 'Charlie' => 'blue', 'Sei' => 'red' }
+
+  grids_x = @date_from.to_date.upto(@date_to.to_date).map.with_index do |d, idx|
+    {
+        v: d,
+        label: d.day == 1 ? d.strftime('%Y/%m/%d') : d.day.to_s,
+        offset_y: d.day == 1 ? 0 : font_size * 1,
+        x: ox + area_w * (d.to_time - @date_from) / (@date_to - @date_from),
+        c: if idx == 0
+             'black'
+           else
+             d.day == 1 ? 'gray' : 'lightgray'
+           end
+    }
+  end
+  grids_y = (0.0..@value_max).step(0.1).map.with_index do |v, idx|
+    {
+        v: v,
+        label: (idx % 10 == 0) ? format('%.1f' % v) : nil,
+        y: oy + area_h * (v / @value_max),
+        c: if idx == 0
+             'black'
+           else
+             (idx % 10 == 0) ? 'gray' : 'lightgray'
+           end
+    }
+  end
+
+  coordsList = @weight_events.map do |label,events|
+    {
+        label: label,
+        points: events.map do |e|
+          {
+              x: ox + area_w * (e.created_at - @date_from) / (@date_to - @date_from),
+              y: oy + area_h * (e.value.abs / @value_max),
+              c: colors[label]
+          }
+        end
+    }
+  end
+%>
+<svg viewBox="0,0,<%=w %>,<%=h %>" style="width: 100%;">
+  <text x="<%=w / 3 %>" y="<%=h - 24 %>" font-size="<%=font_size %>" text-anchor="middle" dominant-baseline="central" style="fill: <%=colors['Charlie'] %>;">Charlie</text>
+  <text x="<%=w * 2/ 3 %>" y="<%=h - 24 %>" font-size="<%=font_size %>" text-anchor="middle" dominant-baseline="central" style="fill: <%=colors['Sei'] %>;">Sei</text>
+  <% grids_x.each do |g| %>
+    <line x1="<%=g[:x] %>" y1="<%=oy %>" x2="<%=g[:x] %>" y2="<%=oy + area_h %>" style="width: 1px; stroke: <%=g[:c] %>" />
+    <text x="<%=g[:x] %>" y="<%=oy + font_size / 2 + g[:offset_y] %>" font-size="<%=font_size %>" text-anchor="middle" dominant-baseline="hanging"><%=g[:label] %></text>
+  <% end %>
+  <% grids_y.each do |g| %>
+    <line x1="<%=ox %>" y1="<%=g[:y] %>" x2="<%=ox + area_w %>" y2="<%=g[:y] %>" style="width: 1px; stroke: <%=g[:c] %>" />
+    <% if g[:label].present? %>
+      <text x="<%=ox - font_size / 2 %>" y="<%=g[:y] %>" font-size="<%=font_size %>" text-anchor="end" dominant-baseline="central"><%=g[:label] %></text>
+    <% end %>
+  <% end %>
+  <% coordsList.each do |coords| %>
+    <% lp = nil %>
+    <% coords[:points].each do |p| %>
+      <% if lp.present? %>
+        <line x1="<%=lp[:x] %>" y1="<%=lp[:y] %>" x2="<%=p[:x] %>" y2="<%=p[:y] %>" style="width: 1px; stroke: <%=p[:c] %>" />
+      <% end %>
+      <% lp = p %>
+    <% end %>
+    <% coords[:points].each do |p| %>
+      <circle cx="<%=p[:x] %>" cy="<%=p[:y] %>" r="2" style="fill: <%=p[:c] %>" />
+    <% end %>
+  <% end %>
+  <clipPath id="clipping-path-1" clipPathUnits="objectBoundingBox">
+    <circle cx="0.25" cy="0.25" r="0.25" id="circle"/>
+    <rect x="0.5" y="0.2" width="0.5" height="0.8"/>
+  </clipPath>
+</svg>
