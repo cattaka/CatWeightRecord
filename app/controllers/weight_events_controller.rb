@@ -85,7 +85,7 @@ class WeightEventsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def weight_event_params
-      params.require(:weight_event).permit(:label, :value)
+      params.require(:weight_event).permit(:label, :source, :value)
     end
 
     def set_rparams
