@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_10_03_061512) do
+ActiveRecord::Schema.define(version: 2020_10_25_141932) do
 
   create_table "image_files", force: :cascade do |t|
     t.binary "data"
@@ -24,6 +24,7 @@ ActiveRecord::Schema.define(version: 2020_10_03_061512) do
     t.integer "image_file_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "source"
     t.index ["image_file_id"], name: "index_weight_events_on_image_file_id"
   end
 
