@@ -13,6 +13,7 @@ THRESHOLD_COUNT=30
 THRESHOLD_VARIANCE=0.05
 THRESHOLD_DIFF_VALUE=0.5
 DELAY_FOR_SAVE=5
+SOURCE='1'
 
 API_URL='http://localhost:3000/cat_weight_scale/weight_events'
 
@@ -39,7 +40,7 @@ def post_image(value: float):
         camera.capture(buffer, format='jpeg', quality=50)
         buffer.seek(0)
     response = requests.post(API_URL,
-        data = {"weight_event[label]": '', "weight_event[value]": '{:0.3f}'.format(value)},
+        data = {"weight_event[label]": '', "weight_event[source]": SOURCE, "weight_event[value]": '{:0.3f}'.format(value)},
         files = {"weight_event[image_file]": ("image.jpg", buffer.read(), "image/jpeg")}
     )
     print(response.status_code)

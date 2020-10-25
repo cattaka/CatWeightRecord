@@ -11,6 +11,7 @@
     <tr>
       <th>Created at</th>
       <th>Label</th>
+      <th>Source</th>
       <th>Value</th>
       <th>Image</th>
       <th colspan="3"></th>
@@ -28,6 +29,7 @@
             <% end %>
           </select>
         </td>
+        <td><%= weight_event.source %></td>
         <td><%= weight_event.value %></td>
         <td>
           <% if weight_event.image_file_id %>
