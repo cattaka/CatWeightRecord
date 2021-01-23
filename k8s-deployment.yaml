@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cat-weight-record
+  labels:
+    app: cat-weight-record
+spec:
+  selector:
+    matchLabels:
+      run: cat-weight-record
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: cat-weight-record
+    spec:
+      containers:
+        - name: cat-weight-record
+          image: "ctkdeskmini.home.cattaka.net:32000/cat-weight-record:latest"
+          envFrom:
+            - configMapRef:
+                name: cat-weight-record-config
+          imagePullPolicy: IfNotPresent
+          ports:
+          - containerPort: 30081
+            hostPort: 8081
+            name: backend
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cat-weight-record
+  labels:
+    app: cat-weight-record
+spec:
+  ports:
+  - name: a
+    port: 8081
+    protocol: TCP
+    targetPort: backend
+  selector:
+    run: cat-weight-record
+  type: LoadBalancer
